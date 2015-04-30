@@ -5,6 +5,7 @@ PhotoPaintter is a global action component for salesforce1 mobile app.
 ### Setting
   - Deploy codes under /src to your salesforce org.
   - Add a PhotoPaintter action to the Global Layout in your salesforce org via
+
 >Setting > Create > Global Actions > Publisher Layouts
 
 ### Screen shots
@@ -16,6 +17,9 @@ License
 ----
 See [license] (MIT License).
 
+
 **Free Software, Hell Yeah!**
+Also you get this app at [appExchange]
 
 [license]: https://github.com/kazu-200WR/PhotoPaintter-for-salesforce1/LICENSE
+[appExchange]: https://appexchangejp.salesforce.com/listingDetail?listingId=a0N30000000pwBXEAY
