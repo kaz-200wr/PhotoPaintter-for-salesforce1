@@ -18,4 +18,4 @@ See [license] (MIT License).
 
 **Free Software, Hell Yeah!**
 
-[license]: https://github.com/kazu-200WR/PhotoPaintter/LICENSE
+[license]: https://github.com/kazu-200WR/PhotoPaintter-for-salesforce1/LICENSE
