@@ -19,6 +19,7 @@ See [license] (MIT License).
 
 
 **Free Software, Hell Yeah!**
+
 Also you get this app at [appExchange]
 
 [license]: https://github.com/kazu-200WR/PhotoPaintter-for-salesforce1/LICENSE
