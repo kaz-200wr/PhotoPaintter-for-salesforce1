@@ -1,0 +1,207 @@
+<apex:page contentType="text/css" standardStylesheets="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+    *{
+        margin:0px; padding:0px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+    }
+
+    .pageWrapper{
+        height:100%;
+    }
+
+    .main {
+        padding-left:10px;
+        margin:auto;
+    }
+    
+    .canvas{
+        border: 1px solid rgb(193, 193, 193);
+    }
+
+    .toolbar{
+        height: 54px;
+        margin-top: 6px;
+    }
+
+    .toolbar #toolbarLeft{
+        float: left;
+        margin-left: 10px;
+    }
+
+    .toolbar #toolbarRight{
+        float: right;
+    }
+
+    .toolbar li {
+        list-style-type: none;
+        display:block;
+        float:left;
+    }
+    .toolbar .tool{
+        margin:auto;
+        border:1px solid #ccc;
+        border-radius:6px;
+        margin:4px;
+    }
+    .toolbar .icon{
+        margin:4px;
+    }
+    .toolbar .styleSelecter{
+        text-align:center; line-height:44px;
+    }
+    .toolbar #small{
+        font-size:100%;
+    }
+    .toolbar #middle{
+        font-size:200%;
+    }
+    .toolbar #large {
+        font-size:400%;
+    }
+    
+    .styleSelecter.active, .pen.active{
+        border-bottom-width:5px !important;
+        border-bottom-color:red !important;
+        border-bottom-style:outset !important;
+    }
+
+    .toolbar .historyButton, #saveButton, #chatterButton{
+        color: rgb(200, 200, 200);
+    }
+    .toolbar .historyButton.active, #saveButton.active, #chatterButton.active{
+        color: rgb(0, 0, 0);
+    }
+
+    #memoryValue.alert{
+        background-color: red;
+    }
+
+    #message{
+        color: red;
+        font-size: 2rem;
+        display:none;
+    }
+
+    .sp-replacer{
+        padding: 0;
+        border: 0;
+    }
+    .sp-preview-inner{
+        width:100%;
+        height:100%;
+        margin:auto;
+    }
+    .sp-preview{
+        border: 0;
+        margin: 0;
+    }
+
+    .sp-container button {
+        font-size:24px;
+    }
+    .sp-cancel {
+        font-size: 24px;
+    }
+
+    #cameraButton{
+        font-family: FontAwesome;
+        font-size: 44px;
+    }
+
+@media screen and (min-width: 500px) and (max-device-width: 1200px) {
+    body {
+        width:1014px;
+    }
+    .main {
+        width:1014px;
+    }
+    .toolbar #toolbarRight{
+        margin-right: 20px;
+    }
+
+    .toolbar .tool{
+        width:40px;
+        height:40px;
+    }
+    .toolbar .icon{
+        height:40px;
+    }
+
+    .canvas {
+        width:1000px;
+        height:636px;
+    }
+    .canvas canvas {
+        width:1000px;
+        height:636px;
+    }
+    .sp-palette .sp-thumb-el {
+        width: 40px;
+        height: 40px;
+    }
+    .sp-palette {
+        max-width: 400px;
+    }
+
+    .sp-picker-container {
+        width: 400px;
+    }
+    .sp-preview{
+        width: 40px;
+        height: 40px;
+    }
+
+}
+@media screen and (min-width: 320px) and (max-device-width: 480px) {
+    body {
+        width:100%;
+    }
+    .main {
+        width:100%;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-left: 0px;
+    }
+    .toolbar #toolbarLeft{
+        margin-left: 0;
+    }
+    .toolbar #toolbarRight{
+        margin-right: 0;
+    }
+
+    .toolbar .tool{
+        width:36px;
+        height:36px;
+    }
+    .toolbar .icon{
+        height:40px;
+    }
+
+    .canvas {
+        width:320px;
+        height:460px;
+        margin: 0 auto;
+    }
+    .canvas canvas {
+        width:320px;
+        height:460px;
+    }
+    .sp-palette .sp-thumb-el {
+        width: 26px;
+        height: 26px;
+    }
+    .sp-palette {
+        max-width: 240px;
+    }
+
+    .sp-picker-container {
+        width: 240px;
+    }
+    .sp-preview{
+        width: 36px;
+        height: 36px;
+    }
+}
+
+</apex:page>

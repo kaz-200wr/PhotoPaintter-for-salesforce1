@@ -1,0 +1,323 @@
+<apex:page standardStylesheets="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+    <script>
+    var canvas, c;
+    var imageMemory = new Array(5);
+    var flagMemory = 0;
+    var gage;
+    var mode = 'ipad';
+
+    var CANVASWIDTH;
+    var CANVASHEIGHT;
+
+    $j=jQuery.noConflict();
+    $j().ready(function() {
+        userAgent = window.navigator.userAgent.toLowerCase();
+        if (userAgent.indexOf('ipad') != -1) {
+            mode = 'ipad';
+            CANVASWIDTH = 1000;
+            CANVASHEIGHT = 636;
+        }else if (userAgent.indexOf('iphone') != -1) {
+            mode = 'iphone';
+            $j('.styleSelecter').hide();
+            CANVASWIDTH = window.innerWidth;
+            if(window.innerWidth <= 330){// iphone 5,5S
+                CANVASHEIGHT = 440;
+            }else{
+                CANVASHEIGHT = window.innerHeight - 84;
+            }
+            $j('.fa-3x').css('font-size', '2.7em');
+        }   
+
+        $j('.canvas').width(CANVASWIDTH);
+        $j('.canvas').height(CANVASHEIGHT);
+        $j('.canvas canvas').width(CANVASWIDTH);
+        $j('.canvas canvas').height(CANVASHEIGHT);
+
+        //fastclick
+        // FastClick.attach(document.body);
+        // init html5 canvas
+        canvas = document.getElementById("myCanvas");
+        c = canvas.getContext("2d");
+        var drawing = false;
+        var oldPos;
+        
+        // Initiaize Canvas and Context
+        canvas.width = CANVASWIDTH;
+        canvas.height = CANVASHEIGHT;
+
+        c.strokeStyle = "#000000";
+        c.lineWidth = 1;
+        c.lineJoin = "round";
+        c.lineCap = "round";
+
+        setPenWidth(1);
+        imageMemory[0] = c.getImageData(0,0,canvas.width,canvas.height);
+
+        // Start drawing when tap start
+        canvas.addEventListener("touchstart", function (event) {
+            drawing = true;
+            oldPos = getPosT(event);
+        }, false);
+        
+        // End drawing when tap end
+        canvas.addEventListener("touchend", function () {
+            touchendEvent();
+        }, false);
+        
+        // gesture event
+        canvas.addEventListener("gestureend", function () {
+            touchendEvent();
+        }, false);
+        
+        // Drawing
+        canvas.addEventListener("touchmove", function (event) {
+            var pos = getPosT(event);
+            if (drawing) {
+                c.beginPath();
+                c.moveTo(oldPos.x, oldPos.y);
+                c.lineTo(pos.x, pos.y);
+                c.stroke();
+                c.closePath();
+                oldPos = pos;
+            }
+        });
+        
+        // Get touched positions
+        function scrollX(){return document.documentElement.scrollLeft || document.body.scrollLeft;}
+        function scrollY(){return document.documentElement.scrollTop || document.body.scrollTop;}
+        function getPosT (event) {
+            var mouseX = event.touches[0].clientX - $j(canvas).position().left + scrollX();
+            var mouseY = event.touches[0].clientY - $j(canvas).position().top + scrollY();
+            return {x:mouseX, y:mouseY};
+        }
+        
+        //colorpicker
+        $j("#togglePaletteOnly").spectrum({
+            showPalette: true,
+            color: '#000',
+            maxSelectionSize: 8,
+            // preferredFormat: "hex",
+            // showInput: true,
+            palette: [
+                ['#800000','#808000','#008000','#008080','#000080','#800080','#7F7F7F','#808080'],
+                ['#804000','#408000','#008040','#004080','#400080','#800040','#666666','#999999'],
+                ["#FF0000","#FFFF00","#00FF00","#00FFFF","#0000FF","#FF00FF","#4C4C4C","#B3B3B3"],
+                ["#FF8000","#80FF00","#00FF80","#0080FF","#8000FF","#FF0080","#333333","#CCCCCC"],
+                ["#FF6666","#FFFF66","#66FF66","#66FFFF","#6666FF","#FF66FF","#191919","#E6E6E6"],
+                ["#FFCC66","#CCFF66","#66FFCC","#66CCFF","#CC66FF","#FF6FCF","#000000","#FFFFFF"],
+                ["#EFE0B7","#EBBB34","#9FDE35","#90E1FE","#3C65EC","#F9CEF0","#7E43B1","#583810"],
+
+                // ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
+                // ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
+                // ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
+                // ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
+                // ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
+                // ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
+                // ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
+                // ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
+            ]
+        });
+        $j('.sp-replacer').last().hide();
+        $j('.sp-dd').hide();
+
+        // pen color
+        $j(".sp-choose").click(function() {
+            c.strokeStyle = $j("#togglePaletteOnly").spectrum("get").toRgbString();
+            c.globalCompositeOperation = 'source-over';
+            $j("#palet").addClass('active');
+            $j("#eraser").removeClass('active');
+
+            setPenWidth(1);
+        });
+
+
+        // eraser
+        $j("#eraser").click(function (){
+            c.globalCompositeOperation = 'destination-out';
+            $j("#palet").removeClass('active');
+            $j(this).addClass('active');
+
+            setPenWidth(3);
+        });
+        
+        // select pen width
+        $j(".styleSelecter").click(function () {
+            $j(".styleSelecter").removeClass('active');
+            $j(this).addClass('active');
+
+            if($j("#palet").hasClass('active')){
+                setPenWidth(1);    
+            }else{
+                setPenWidth(3);    
+            }
+        });
+
+        // Undo button
+        $j('#undoButton').click(function(){
+            if($j('#undoButton').hasClass('active')){
+                doundo();
+            }
+        });
+
+        // redo button
+        $j('#redoButton').click(function(){
+            if($j('#redoButton').hasClass('active')){
+                doredo();
+            }
+        });
+
+        //chatter button
+        $j("#chatterButton").click(function () {
+            $j('#chatterButton').removeClass('active');
+            postChatter('post')
+        });
+
+        $j('#cameraButton').click(function() {
+            if(mode == 'ipad'){
+                $j('input[name=photo]').trigger('click');
+            }else{
+                $j('input[name=photoIphone]').trigger('click');
+            }
+        });
+
+        $j('input[name=photoIphone]').change(function(e){
+            callPhotoResize(e);
+        });
+
+        $j('input[name=photo]').change(function(e){
+            callPhotoResize(e);
+        });
+    }); 
+    
+    var callPhotoResize = function(e){
+        var file = e.target.files[0];
+        var photow = (mode == 'ipad')? 0 : CANVASWIDTH;
+        var photoh = (mode == 'ipad')? CANVASHEIGHT : 0;        
+        // CANVAS RESIZING
+        $j.canvasResize(file, {
+            width: photow,
+            height: photoh,
+            crop: false,
+            quality: 80,
+            //rotate: 90,
+            callback: function(data, width, height) {
+                var img = new Image();
+                img.src = data;
+                img.onload = function(){
+                    if(mode == 'ipad'){
+                        c.drawImage(img, (1014 - width) / 2, 0);
+                    }else{
+                        c.drawImage(img, (CANVASWIDTH - width) / 2, (CANVASHEIGHT - height) / 2);
+                    }
+                    tempSave();
+                }
+            }
+        });
+    }
+
+    // temp save for redo, undo
+    var tempSave = function(){
+        if(flagMemory == imageMemory.length-1){
+            imageMemory.shift();
+        }else{
+            ++flagMemory;
+        }
+        if(flagMemory == imageMemory.length-1){
+            $j('#redoButton').removeClass('active');
+        }
+        imageMemory[flagMemory] = c.getImageData(0,0,canvas.width,canvas.height);
+        $j('#undoButton').addClass('active');
+    }
+
+    var doundo = function(){
+        if(flagMemory > 0){
+            flagMemory--;
+            c.putImageData(imageMemory[flagMemory], 0, 0);
+            $j('#redoButton').addClass('active');
+            if(flagMemory==0){
+                $j('#undoButton').removeClass('active');
+            }
+        }
+    }
+
+    var doredo = function(){
+        if(flagMemory < imageMemory.length-1){
+            flagMemory++;
+            c.putImageData(imageMemory[flagMemory], 0, 0);
+            $j('#undoButton').addClass('active');
+            if(imageMemory[flagMemory + 1] === undefined){
+                $j('#redoButton').removeClass('active');
+            }
+        }
+    }
+
+    //Post
+    var postChatter = function(){
+        // var type = 'image/jpeg';
+        // var dataurl = canvas.toDataURL(type);  
+        // var bin = atob(dataurl.split(',')[1]);
+        // var buffer = new Uint8Array(bin.length);  
+        // for (var i = 0; i < bin.length; i++) {  
+        //     buffer[i] = bin.charCodeAt(i);  
+        // }  
+        // var blob = new Blob([buffer.buffer], {type: type});
+
+        // $j.canvasResize(blob, {
+        //     width: 0,
+        //     height: 600,
+        //     crop: false,
+        //     quality: 80,
+        //     //rotate: 90,
+        //     callback: function(data, width, height) {
+        //         console.log(data);
+        //         postChatterApex('{!$CurrentPage.parameters.id}', data);
+        //     }
+        // });
+        canvas_bk = document.getElementById("myCanvas_bk");
+        c_bk = canvas_bk.getContext("2d");
+        canvas_bk.width = CANVASWIDTH;
+        canvas_bk.height = CANVASHEIGHT;
+        c_bk.fillStyle = "rgb(255, 255, 255)";
+        c_bk.fillRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
+        //marge the image
+        var imageData = canvas.toDataURL('image/png');   
+        var img = new Image();
+        img.src = imageData;
+        img.onload = function() {
+            c_bk.drawImage(img, 0, 0);
+            var base64 = canvas_bk.toDataURL('image/jpeg');
+            postChatterApex('{!$CurrentPage.parameters.id}', base64);
+        }
+    }
+
+    
+    var setPenWidth = function(power){
+        $j.each($j(".styleSelecter"), function() {
+            if($j(this).hasClass('active')){
+                if($j(this).attr("id") === 'small'){
+                    c.lineWidth = 2 * power;
+                }else if ($j(this).attr("id") === 'middle'){
+                    c.lineWidth = 5 * power;
+                }else{
+                    c.lineWidth = 8 * power;
+                }
+            }
+        });
+    }
+
+    var touchendEvent = function(){
+        tempSave();
+        drawing = false;
+    }
+
+    var afterSave = function(action){
+        swal({
+            title: action + " success!",
+            text: "",
+            type: "success",
+            timer: 3000,
+        });
+        $j('#chatterButton').addClass('active');
+    }
+    </script>
+</apex:page>

@@ -1,0 +1,77 @@
+<apex:page showheader="false" sidebar="false" docType="html-5.0"  standardStylesheets="false" controller="PhotoPaintterController" applyBodyTag="false" applyHtmlTag="false">
+<html>
+<head>
+    <meta name="viewport" content="width=1024, initial-scale=1.0, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    <apex:stylesheet value="{!URLFOR($Resource.PhotoPaintter, 'spectrum/spectrum.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.PhotoPaintter, 'sweetalert/sweet-alert.css')}"/>
+
+    <apex:stylesheet value="{!$Page.PhotoPaintter_Css}"/>
+</head>
+
+<body>
+<div class="main">
+
+  <div class="toolbar">
+    <ul id="toolbarLeft">
+      <li class="icon active">
+        <p id="cameraButton" class="button">&#xf030;</p>
+          <!-- got Abend on iPad with camera! -->
+          <input name="photoIphone" type="file" style="display:none;"/>
+          <input name="photo" type="file" style="display:none;" multiple="multiple"/>
+      </li>
+      <li id="palet" class="tool pen active">
+        <input type="text" name="togglePaletteOnly" id="togglePaletteOnly" style="display: none;" />
+        <div class="sp-replacer sp-light">
+          <div class="sp-preview">
+            <div class="sp-preview-inner" style="background-color: rgb(0, 0, 0);"></div>
+          </div>
+          <div class="sp-dd">▼</div>
+        </div>
+      </li>
+
+      <li id="eraser" class="icon pen"><i class="fa fa-eraser fa-3x"></i></li>
+
+      <li id="small" class="tool styleSelecter">S</li>
+      <li id="middle" class="tool styleSelecter active">M</li>
+      <li id="large" class="tool styleSelecter">L</li>
+
+      <li><i id="undoButton" class="tool historyButton fa fa-undo fa-3x"></i></li>
+      <li><i id="redoButton" class="tool historyButton fa fa-repeat fa-3x"></i></li>
+    </ul>
+
+    <ul id="toolbarRight">
+      <li id="chatterButton" class="icon active"><i class="fa fa-weixin fa-3x"></i></li>
+    </ul>
+  </div>
+
+  <div class="canvas" ontouchmove="event.preventDefault()">
+    <canvas id="myCanvas" />
+    <canvas id="myCanvas_bk" style="display:none"/>
+  </div>
+</div>
+</body>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type='text/javascript' src='/canvas/sdk/js/publisher.js'></script>
+
+<script src="{!URLFOR($Resource.PhotoPaintter, 'spectrum/spectrum.js')}"></script>
+<script src="{!URLFOR($Resource.PhotoPaintter, 'fastclick/fastclick.js')}"></script>
+<script src="{!URLFOR($Resource.PhotoPaintter, 'sweetalert/sweet-alert.min.js')}"></script>
+
+<script src="{!URLFOR($Resource.PhotoPaintter, 'canvasResize/jquery.exif.js')}"></script>
+<script src="{!URLFOR($Resource.PhotoPaintter, 'canvasResize/jquery.canvasResize.js')}"></script>
+<script src="{!URLFOR($Resource.PhotoPaintter, 'canvasResize/canvasResize.js')}"></script>
+
+<apex:include pageName="PhotoPaintter_Js"/>
+
+<apex:form >
+    <apex:actionFunction action="{!postChatter}" name="postChatterApex" rerender="_dummy" oncomplete="afterSave('post');">
+        <apex:param value="" assignTo="{!parentId}" name="pId"/>
+        <apex:param value="" assignTo="{!imageData}" name="imageData"/>
+    </apex:actionFunction> 
+</apex:form>
+</html>
+</apex:page>

@@ -1,0 +1,16 @@
+<apex:page sidebar="false" showheader="false" cache="false" docType="html-5.0"  standardStylesheets="false">
+<script>
+window.onload=function(){
+    var isSF1=typeof sforce === 'undefined' ? otherApp(): s1App(); 
+}
+
+var s1App = function(){
+    sforce.one.navigateToURL('{!$Page.PhotoPaintter}?id={!$CurrentPage.parameters.Id}');
+}
+
+var otherApp = function(){
+    alert('this action is for S1 only.');
+}
+
+</script>
+</apex:page>
